@@ -1,5 +1,5 @@
 <template>
-  <div id="activityApp">
+  <div v-if="isDataLoaded" id="activityApp">
     <nav class="navbar is-white topNav">
       <div class="container">
           <div class="navbar-brand">
@@ -58,8 +58,8 @@ export default {
       isFetching: false,
       error: null,
       user: {},
-      activities: {},
-      categories: {}
+      activities: null,
+      categories: null
 }
 },
 
@@ -79,6 +79,9 @@ export default {
       } else { 
         return 'No activities, so sad :('
       }
+    },
+    isDataLoaded () {
+      return this.activities && this.categories
     }
   },
   
@@ -94,7 +97,10 @@ export default {
           this.isFetching = false
         })
     this.user = fetchUser(),
-    this.categories = fetchCategories()
+    fetchCategories()
+      .then(categories => {
+        this.categories = categories
+    })
   },
   methods: {
    addActivity (newActivity) {
